@@ -1,0 +1,34 @@
+# Part 1
+library (tidyverse)
+
+day3 <- read.csv2("C:/Users/frida/Desktop/day3.txt", header=FALSE, sep="") 
+
+day3$V1 <- gsub ("[.]",0,day3$V1)
+day3$V1 <- gsub ("[#]",1,day3$V1)
+
+# 1st positions
+i.row <- 2
+i.char <- 4
+i.x <- 1
+
+x<- vector(mode="character", length=nrow(day3) - 1)
+
+while (i.row <= nrow(day3)) {
+  x[i.x] <- substr (day3$V1[i.row], i.char, i.char)
+  
+  if (i.char + 3 <= 31) {
+    i.char <- i.char + 3
+  } else {
+    i.char <- i.char + 3 - 31
+  }
+  
+  i.row <- i.row + 1
+  
+  i.x <- i.x + 1
+  
+}
+
+# answer
+sum(as.numeric(x))
+
+# Part 2
