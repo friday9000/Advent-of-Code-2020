@@ -1,0 +1,47 @@
+library (tidyverse)
+
+# part 1
+
+day2 <- read.table("C:/Users/frida/Desktop/day2.txt", quote="\"", comment.char="") %>%
+  separate (V1, into = c('min','max'), sep = '-', convert = TRUE)
+
+FunStripper <- function (x, y) {
+  z <- gsub (paste0("[^",y,"]"), "", x)
+  return (z)
+}
+
+x <- vector(mode="numeric", length=nrow(day2))
+
+for (i in 1:nrow(day2)) {
+  x[i] <- FunStripper (day2$V3[i], day2$V2[i])
+}
+
+day2$nchar_match <-
+  nchar (x)
+
+day2$is_valid <-
+  day2$nchar_match >= day2$min & day2$nchar_match <= day2$max
+
+# answer for part 1
+sum(day2$is_valid == TRUE)
+  
+# part 2
+
+day2_2 <- read.table("C:/Users/frida/Desktop/day2.txt", quote="\"", comment.char="") %>%
+  separate (V1, into = c('pos1','pos2'), sep = '-', convert = TRUE) %>%
+  mutate (V2 = gsub (":", "", V2))
+
+y <- vector(mode="numeric", length=nrow(day2_2))
+z <- vector(mode="numeric", length=nrow(day2_2))
+
+for (i in 1:nrow(day2_2)) {
+  y[i] <- 
+    substr(day2_2$V3[i], day2_2$pos1[i], day2_2$pos1[i]) == day2_2$V2[i]
+  z[i] <-
+    substr(day2_2$V3[i], day2_2$pos2[i], day2_2$pos2[i]) == day2_2$V2[i]
+}
+
+day2_2$meets_criteria <- y + z == 1
+
+# answer for part 2
+sum (day2_2$meets_criteria)
