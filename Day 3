@@ -32,3 +32,52 @@ while (i.row <= nrow(day3)) {
 sum(as.numeric(x))
 
 # Part 2
+# part 2
+
+
+FunSlopes <- function (i.data, i.row, i.char, i.x, i.horizontal, i.vertical) {
+  x<- vector(mode="character", length=nrow(i.data) - 1)
+  
+  while (i.row <= nrow(i.data[1])) {
+    x[i.x] <- substr (i.data[i.row,1], i.char, i.char)
+    
+    if (i.char + i.horizontal <= 31) {
+      i.char <- i.char + i.horizontal
+    } else {
+      i.char <- i.char + i.horizontal - 31
+    }
+    
+    i.row <- i.row + i.vertical
+    
+    i.x <- i.x + i.vertical
+    
+  }
+  
+  # answer
+  return (sum(as.numeric(x), na.rm = TRUE))
+}   
+
+data <- c(rep(day3,5))
+row <- c(2,2,2,2,3)
+char <- c(2,4,6,8,2)
+index <- rep(1,5)
+horizontal <- c(1,3,5,7,1)
+vertical <- c(1,1,1,1,2)
+
+all_routes <-
+lapply (1:5, function(x) FunSlopes(
+  i.data = as_tibble(data[[x]]),
+  i.row = row[x],
+  i.char = char[x],
+  i.x = index[x],
+  i.horizontal = horizontal[x],
+  i.vertical = vertical[x]
+)
+)
+
+# answer
+all_routes[[1]] *
+  all_routes[[2]] *
+  all_routes[[3]] *
+  all_routes[[4]] *
+  all_routes[[5]] 
