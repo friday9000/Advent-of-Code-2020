@@ -3,7 +3,6 @@ library(tidyverse)
 day4_raw <-
   readLines ('C:/Users/frida/Desktop/day4.txt')
 
-
 receiver <- tibble (comb = NA)
 
 collector <- vector (mode = "character", length = 1)
