@@ -1,0 +1,39 @@
+# Part 1
+library(reshape2)
+library(tidyverse)
+library(stringr)
+
+day4_raw <-
+  readLines('C:/Users/frida/Desktop/day4.txt')
+
+
+receiver <- tibble (
+  comb = NA
+)
+
+collector <- vector(mode="character", length=1)
+
+for (i in 1:(length(day4_raw) + 1)) {
+  if (i == length(day4_raw) + 1) {
+    receiver <- bind_rows (receiver, tibble(comb = collector))
+  } else {
+    if (day4_raw[i] != "") {
+      collector <- paste (collector, day4_raw[i], sep = " ")
+    } else {
+      receiver <- bind_rows (receiver, tibble(comb = collector))
+      collector <- vector(mode="character", length=1)
+    }
+  }
+}
+
+receiver <- receiver[2:nrow(receiver),] %>%
+  mutate(valid = regexpr ('byr', comb, ignore.case = FALSE) > 1 &
+           regexpr ('iyr', comb, ignore.case = FALSE) > 1 &
+           regexpr ('eyr', comb, ignore.case = FALSE) > 1 &
+           regexpr ('hgt', comb, ignore.case = FALSE) > 1 &
+           regexpr ('hcl', comb, ignore.case = FALSE) > 1 &
+           regexpr ('ecl', comb, ignore.case = FALSE) > 1 &
+           regexpr ('pid', comb, ignore.case = FALSE) > 1)
+
+
+sum(receiver$valid)
