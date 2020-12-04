@@ -35,5 +35,5 @@ receiver <- receiver[2:nrow(receiver),] %>%
            regexpr ('ecl', comb, ignore.case = FALSE) > 1 &
            regexpr ('pid', comb, ignore.case = FALSE) > 1)
 
-
+# answer
 sum(receiver$valid)
