@@ -37,3 +37,104 @@ receiver <- receiver[2:nrow(receiver),] %>%
 
 # answer
 sum(receiver$valid)
+
+# part 2
+
+
+FunStripper <- function (i.target, i.data) {
+  temp <- vector(mode = "character", length = length(i.data))
+  
+  for (i in 1:length(i.data)) {
+    temp[i] <-
+      str_match(i.data[i], paste0(i.target, "\\s*(.*?)\\s* "))[2]
+  }
+  return (temp)
+}
+
+
+stripped <-
+  lapply (
+    list('byr:', 'iyr:', 'eyr:', 'hgt:', 'hcl:', 'ecl:', 'pid:'),
+    FunStripper,
+    i.data = receiver$comb
+  )
+
+receiver <- receiver %>%
+  mutate (
+    byr = stripped[[1]],
+    iyr = stripped[[2]],
+    eyr = stripped[[3]],
+    hgt = stripped[[4]],
+    hcl = stripped[[5]],
+    ecl = stripped[[6]],
+    pid = stripped[[7]]
+  )
+
+# validation
+
+temp <- vector(mode = "logical", length = nrow(receiver))
+
+for (i in 1:nrow(receiver)) {
+  temp[i] <-
+    (nchar(stripped[[1]][i]) == 4 & 
+       as.numeric(stripped[[1]][i]) %in% 1920:2002) &
+    (nchar(stripped[[2]][i]) == 4 &
+       as.numeric(stripped[[2]][i]) %in% 2010:2020) &
+    (nchar(stripped[[3]][i]) == 4 &
+       as.numeric(stripped[[3]][i]) %in% 2020:2030) &
+    (xor(regexpr ('cm', stripped[[4]][i], ignore.case = FALSE) > 0 &
+           parse_number(stripped[[4]][i]) %in% 150:193, 
+         regexpr ('in', stripped[[4]][i], ignore.case = FALSE) > 0 &
+           parse_number(stripped[[4]][i]) %in% 59:76)) &
+    (substr(stripped[[5]][i],1,1) == '#' & 
+       nchar (str_replace_all(stripped[[5]][i], "[^[:alnum:]]", "")) == 6 &
+       nchar (stripped[[5]][i]) == 7 )&
+    (nchar(stripped[[6]][i]) == 3 & stripped[[6]][i] %in% c('amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth')) &
+    (nchar(stripped[[7]][i]) == 9 & nchar(str_replace_all(stripped[[7]][i], "[^[:digit:].]", "")) == 9)
+}
+
+table(temp)
+
+
+tempa <- vector(mode = "logical", length = nrow(receiver))
+tempb <- vector(mode = "logical", length = nrow(receiver))
+tempc <- vector(mode = "logical", length = nrow(receiver))
+tempd <- vector(mode = "logical", length = nrow(receiver))
+tempe <- vector(mode = "logical", length = nrow(receiver))
+tempf <- vector(mode = "logical", length = nrow(receiver))
+tempg <- vector(mode = "logical", length = nrow(receiver))
+for (i in 1:nrow(receiver)) {
+  tempa[i] <-
+    (nchar(stripped[[1]][i]) == 4 & 
+    as.numeric(stripped[[1]][i]) %in% 1920:2002) 
+  tempb[i] <-
+    (nchar(stripped[[2]][i]) == 4 &
+    as.numeric(stripped[[2]][i]) %in% 2010:2020) 
+  tempc[i] <-
+    (nchar(stripped[[3]][i]) == 4 &
+    as.numeric(stripped[[3]][i]) %in% 2020:2030)
+  tempd[i] <-
+    (xor(regexpr ('cm', stripped[[4]][i], ignore.case = FALSE) > 0 &
+           parse_number(stripped[[4]][i]) %in% 150:193, 
+         regexpr ('in', stripped[[4]][i], ignore.case = FALSE) > 0 &
+           parse_number(stripped[[4]][i]) %in% 59:76))  
+  tempe[i] <-
+    (substr(stripped[[5]][i],1,1) == '#' & 
+       nchar (str_replace_all(stripped[[5]][i], "[^[:alnum:]]", "")) == 6 &
+       nchar (stripped[[5]][i]) == 7 ) 
+  tempf[i] <-
+    (nchar(stripped[[6]][i]) == 3 & stripped[[6]][i] %in% c('amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth')) 
+  tempg[i] <-
+    (nchar(stripped[[7]][i]) == 9 & nchar(str_replace_all(stripped[[7]][i], "[^[:digit:].]", "")) == 9)
+}
+table(tempg)
+
+receiver$tempa <- tempa
+receiver$tempb <- tempb
+receiver$tempc <- tempc
+receiver$tempd <- tempd
+receiver$tempe <- tempe
+receiver$tempf <- tempf
+receiver$tempg <- tempg
+receiver$temp <- temp
+
