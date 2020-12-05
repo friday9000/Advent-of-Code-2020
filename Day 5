@@ -1,0 +1,38 @@
+# day 5
+day5 <- read.table("C:/Users/frida/Desktop/day5.txt", quote="\"")
+
+FunRow <- function (x) {
+  y <- 0:127
+  for (i in 1:7) {
+    if (substr(x, i, i) == 'F') {
+      y <- min(y):floor(mean(y))
+    } else {
+      y <- ceiling(mean(y)):max(y)
+    }
+  }
+  return (y)
+}
+
+FunCol <- function (x) {
+  y <- 0:7
+  for (i in 8:10) {
+    if (substr(x, i, i) == 'L') {
+      y <- min(y):floor(mean(y))
+    } else {
+      y <- ceiling(mean(y)):max(y)
+    }
+  }
+  return (y)
+}
+
+seat_ID <- vector (mode = "numeric", length = nrow(day5))
+
+for (i in 1:nrow(day5)) {
+  seat_ID[i] <- FunRow(day5[i,1]) * 8 + FunCol(day5[i,1])
+}
+
+# part 1 answer 
+max (seat_ID)
+
+# part 2 answer
+setdiff(min(seat_ID):max(seat_ID), seat_ID)
