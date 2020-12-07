@@ -1,0 +1,37 @@
+day6 <-
+  readLines('day6.txt')
+
+data <-
+  vector (mode = "list",
+          length = sum (stringr::str_count(day6, "") == 0) + 1)
+
+x <- 1
+y <- 1
+
+for (i in 1:length(day6)) {
+  if (day6[i] == "") {
+    y <- y + 1
+    x <- 1
+  } else {
+    data[[y]][x] <- day6[i]
+    x <- x + 1
+  }
+}
+
+# part 1 answer
+Reduce(`+`, lapply (data, function (x)
+  length(unique(unlist(
+    strsplit(x, "")
+  )))))
+
+FunDaySix <- function (x, y) {
+  sum(regexpr(x, y) > 0) == length (y)
+}
+
+FunDaySixV <- Vectorize(FunDaySix, vectorize.args = "x")
+
+# part 2 answer
+Reduce(`+`, lapply (data, function (x)
+  sum(FunDaySixV(unique(
+    unlist(strsplit(x, ""))
+  ), x))))
